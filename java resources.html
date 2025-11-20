@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Free Programming Learning Hub (YouTube)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0f172a;
+      --card-bg: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border: #1f2937;
+      --danger: #ef4444;
+      --radius-lg: 1.5rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 45%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 720px;
+      margin: 0 auto 10px;
+    }
+
+    .pill-row {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(15, 23, 42, 0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .topic-intro {
+      margin-top: 14px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .topic-intro strong {
+      color: var(--text);
+    }
+
+    .topic-tabs {
+      margin: 18px auto 14px;
+      max-width: 900px;
+      padding: 10px;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 55%),
+                  rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow:
+        0 18px 45px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(20px);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .topic-tab {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 7px 14px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, color 0.15s ease, border 0.15s ease,
+                  transform 0.12s ease, box-shadow 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .topic-tab span.icon {
+      font-size: 1rem;
+    }
+
+    .topic-tab:hover {
+      border-color: var(--accent);
+      color: var(--text);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.9);
+    }
+
+    .topic-tab.active {
+      background: linear-gradient(135deg, #0ea5e9, #22c55e);
+      color: #0b1120;
+      border-color: transparent;
+      box-shadow:
+        0 0 18px rgba(34, 197, 94, 0.3),
+        0 0 0 1px rgba(15, 23, 42, 1);
+    }
+
+    .topic-tab.active span.icon {
+      opacity: 0.9;
+    }
+
+    .topic-section {
+      margin-top: 18px;
+      padding: 16px 16px 20px;
+      border-radius: var(--radius-lg);
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      box-shadow:
+        0 18px 35px rgba(15, 23, 42, 0.95),
+        0 0 0 1px rgba(15, 23, 42, 1);
+      display: none;
+    }
+
+    .topic-section.active {
+      display: block;
+    }
+
+    .topic-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .topic-header-main {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .topic-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .topic-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      max-width: 500px;
+    }
+
+    .topic-counter-pill {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 1);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .search-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .search-row {
+        flex-direction: row;
+        align-items: stretch;
+      }
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      flex: 1;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 9px 40px 9px 32px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.92);
+      color: var(--text);
+      font-size: 0.88rem;
+      outline: none;
+      transition: border 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .search-input::placeholder {
+      color: rgba(148, 163, 184, 0.8);
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.7),
+                  0 12px 30px rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 1);
+    }
+
+    .search-icon-left {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .search-kbd {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.7rem;
+      border-radius: 6px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 2px 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(148, 163, 184, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .search-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    @media (min-width: 640px) {
+      .search-buttons {
+        margin-top: 0;
+      }
+    }
+
+    button {
+      border-radius: 999px;
+      padding: 8px 16px;
+      border: none;
+      font-size: 0.84rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, border 0.12s ease;
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #22c55e);
+      color: #0b1120;
+      box-shadow:
+        0 0 18px rgba(34, 197, 94, 0.3),
+        0 0 0 1px rgba(15, 23, 42, 1);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 12px 30px rgba(15, 23, 42, 0.95),
+        0 0 25px rgba(56, 189, 248, 0.5);
+      background: linear-gradient(135deg, #38bdf8, #22c55e);
+    }
+
+    .btn-secondary {
+      background: rgba(15, 23, 42, 1);
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+      border-color: rgba(148, 163, 184, 0.9);
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.9);
+      color: var(--text);
+    }
+
+    .btn-primary span.icon,
+    .btn-secondary span.icon {
+      font-size: 1rem;
+    }
+
+    .chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .chip {
+      font-size: 0.7rem;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.7);
+      cursor: pointer;
+      transition: background 0.12s ease, color 0.12s ease, border 0.12s ease;
+    }
+
+    .chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(15, 23, 42, 1);
+    }
+
+    .resources-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    @media (min-width: 740px) {
+      .resources-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1100px) {
+      .resources-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .card {
+      position: relative;
+      padding: 14px 14px 12px;
+      border-radius: 18px;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.96));
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      box-shadow:
+        0 18px 35px rgba(15, 23, 42, 0.95),
+        0 0 0 1px rgba(15, 23, 42, 1);
+      overflow: hidden;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border 0.12s ease, background 0.15s ease;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background: conic-gradient(
+        from 210deg,
+        transparent,
+        rgba(56, 189, 248, 0.3),
+        transparent,
+        rgba(56, 189, 248, 0.18),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow:
+        0 20px 45px rgba(15, 23, 42, 1),
+        0 0 30px rgba(56, 189, 248, 0.25);
+      border-color: rgba(56, 189, 248, 0.7);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 1), rgba(2, 6, 23, 1));
+    }
+
+    .card:hover::before {
+      opacity: 0.75;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(56, 189, 248, 0.7);
+      color: rgba(244, 244, 245, 0.95);
+      white-space: nowrap;
+    }
+
+    .card-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .card-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .card-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      min-height: 48px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: rgba(226, 232, 240, 0.95);
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .link-button {
+      font-size: 0.78rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.8);
+      background: rgba(15, 23, 42, 0.9);
+      color: rgba(226, 232, 240, 0.96);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease, border 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .link-button:hover {
+      background: rgba(15, 23, 42, 1);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.95);
+      border-color: rgba(56, 189, 248, 1);
+    }
+
+    .tiny-text {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state {
+      margin-top: 14px;
+      padding: 12px 12px 13px;
+      border-radius: 16px;
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      text-align: center;
+      font-size: 0.83rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state strong {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    footer {
+      margin-top: 22px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    footer code {
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Free Programming Learning Hub</h1>
+      <p>
+        Select a topic first, then search inside that topic. All resources are
+        100% free YouTube courses and playlists for self-study.
+      </p>
+      <div class="pill-row">
+        <div class="pill">
+          <span class="pill-dot"></span>
+          <span>Core language basics</span>
+        </div>
+        <div class="pill">
+          <span class="pill-dot"></span>
+          <span>DSA &amp; placements</span>
+        </div>
+        <div class="pill">
+          <span class="pill-dot"></span>
+          <span>Web dev &amp; backend</span>
+        </div>
+        <div class="pill">
+          <span class="pill-dot"></span>
+          <span>English &amp; Hindi</span>
+        </div>
+      </div>
+      <p class="topic-intro">
+        <strong>Step 1:</strong> choose a topic below &nbsp;•&nbsp;
+        <strong>Step 2:</strong> use that section’s search bar (title, channel, level, topic…)
+      </p>
+    </header>
+
+    <!-- Topic selector -->
+    <div class="topic-tabs" id="topicTabs">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Topic sections container -->
+    <div id="topicsContainer">
+      <!-- Populated by JS -->
+    </div>
+
+    <footer>
+     
+    </footer>
+  </div>
+
+  <script>
+    // ---------------- DATA: topics + YouTube resources ----------------
+    const topics = [
+      {
+        id: "java",
+        label: "Java",
+        icon: "☕",
+        subtitle: "From Core Java to OOP, placements and Spring backend.",
+        chips: ["beginner", "oop", "dsa", "spring", "hindi"],
+        resources: [
+          {
+            title: "Java Full Course for Beginners",
+            channel: "Bro Code",
+            level: "Beginner",
+            language: "English",
+            tags: ["Core Java", "Beginner", "Project-based"],
+            url: "https://www.youtube.com/watch?v=eIrMbAQSU34",
+            description:
+              "Beginner-friendly long course covering variables, OOP, collections, exceptions, file I/O, and more with practical examples."
+          },
+          {
+            title: "Java Tutorial for Beginners",
+            channel: "Programming with Mosh",
+            level: "Beginner",
+            language: "English",
+            tags: ["Core Java", "Beginner", "Clean explanations"],
+            url: "https://www.youtube.com/watch?v=BGTx91t8q50",
+            description:
+              "High-quality production and very clear step-by-step coverage of Java basics, OOP concepts, and best practices."
+          },
+          {
+            title: "Java Programming for Beginners – Full Course",
+            channel: "freeCodeCamp.org",
+            level: "Beginner",
+            language: "English",
+            tags: ["Core Java", "Beginner", "Full course"],
+            url: "https://www.youtube.com/watch?v=A74TOX803D0",
+            description:
+              "Complete beginner course using modern Java: fundamentals, OOP, collections, generics, and hands-on coding exercises."
+          },
+          {
+            title: "Java + DSA + Interview Preparation",
+            channel: "Apna College",
+            level: "Intermediate",
+            language: "Hindi",
+            tags: ["DSA", "Placement", "Hindi", "Core Java"],
+            url: "https://www.youtube.com/playlist?list=PLfqMhTWNBTe3LtFWcvwpqTkUSlB32kJop",
+            description:
+              "Popular Java + Data Structures + Algorithms playlist focused on coding interviews and placements in Hindi."
+          },
+          {
+            title: "Java Tutorial for Beginners (Hindi)",
+            channel: "CodeWithHarry",
+            level: "Beginner",
+            language: "Hindi",
+            tags: ["Core Java", "Beginner", "Hindi"],
+            url: "https://www.youtube.com/playlist?list=PLu0W_9lII9agS67Uits0UnJyrYiXhDS6q",
+            description:
+              "Full Java tutorial series in Hindi: installation, basics, OOP, inheritance, exception handling and more."
+          },
+          {
+            title: "Object Oriented Programming in Java – One Shot",
+            channel: "Apna College",
+            level: "Beginner",
+            language: "Hindi",
+            tags: ["OOP", "Hindi", "Core Java"],
+            url: "https://www.youtube.com/watch?v=bSrm9RXwBaI",
+            description:
+              "Single video that focuses on OOP concepts in Java: classes, objects, inheritance, polymorphism, abstraction, and encapsulation."
+          },
+          {
+            title: "Java & Spring Boot (Playlists)",
+            channel: "Java Brains",
+            level: "Intermediate",
+            language: "English",
+            tags: ["Spring", "Backend", "Microservices"],
+            url: "https://www.youtube.com/@Java.Brains",
+            description:
+              "Channel full of playlists on Java, Spring Boot, and microservices, ideal for backend development after mastering core Java."
+          },
+          {
+            title: "Spring Boot & Microservices Tutorials",
+            channel: "JavaTechie",
+            level: "Advanced",
+            language: "English",
+            tags: ["Spring Boot", "Microservices", "Backend"],
+            url: "https://www.youtube.com/@JavaTechie",
+            description:
+              "Real-world backend tutorials: Spring Boot, microservices, security, cloud integrations, and more advanced topics."
+          }
+        ]
+      },
+      {
+        id: "python",
+        label: "Python",
+        icon: "🐍",
+        subtitle: "Python from zero to advanced: basics, OOP, projects.",
+        chips: ["beginner", "oop", "projects", "hindi"],
+        resources: [
+          {
+            title: "Python for Beginners – Full Course",
+            channel: "freeCodeCamp.org",
+            level: "Beginner",
+            language: "English",
+            tags: ["Core Python", "Beginner", "Full course"],
+            url: "https://www.youtube.com/watch?v=rfscVS0vtbw",
+            description:
+              "Very popular full Python course that covers syntax, data types, functions, modules, and OOP with practical exercises."
+          },
+          {
+            title: "Python Tutorial for Beginners",
+            channel: "Programming with Mosh",
+            level: "Beginner",
+            language: "English",
+            tags: ["Core Python", "Beginner", "Clean explanations"],
+            url: "https://www.youtube.com/watch?v=_uQrJ0TkZlc",
+            description:
+              "Step-by-step Python basics with clean explanations and small projects to help you understand real-world usage."
+          },
+          {
+            title: "Complete Python Tutorial in Hindi",
+            channel: "CodeWithHarry",
+            level: "Beginner",
+            language: "Hindi",
+            tags: ["Core Python", "Beginner", "Hindi"],
+            url: "https://www.youtube.com/playlist?list=PLu0W_9lII9agICnT8t4iYVSZ3eykIAOME",
+            description:
+              "Full Python course in Hindi from basic syntax to OOP and project-style examples, beginner-friendly."
+          },
+          {
+            title: "Python Course – Notes + Assignments (Hindi)",
+            channel: "Apna College",
+            level: "Beginner",
+            language: "Hindi",
+            tags: ["Core Python", "Practice", "Hindi"],
+            url: "https://www.youtube.com/playlist?list=PLfqMhTWNBTe0b2nM6JHVCnAkhQRGiZMSJ",
+            description:
+              "Python course focused on problem-solving and practice questions for beginners, taught in Hindi."
+          },
+          {
+            title: "Python OOP & Advanced Concepts",
+            channel: "Corey Schafer",
+            level: "Intermediate",
+            language: "English",
+            tags: ["OOP", "Intermediate", "Advanced features"],
+            url: "https://www.youtube.com/playlist?list=PL-osiE80TeTtoQCKZ03TU5fNfx2UY6U4p",
+            description:
+              "Playlist covering OOP, decorators, generators, context managers and other intermediate/advanced Python concepts."
+          },
+          {
+            title: "Python Projects – Build 12 Apps",
+            channel: "freeCodeCamp.org",
+            level: "Intermediate",
+            language: "English",
+            tags: ["Projects", "Intermediate"],
+            url: "https://www.youtube.com/watch?v=8ext9G7xspg",
+            description:
+              "Learn Python by building multiple beginner-friendly mini-projects, great for practice after basics."
+          }
+        ]
+      },
+      {
+        id: "web",
+        label: "Web Development",
+        icon: "🌐",
+        subtitle: "HTML, CSS, JavaScript and full-stack web development.",
+        chips: ["html", "css", "javascript", "frontend", "full stack"],
+        resources: [
+          {
+            title: "HTML & CSS Full Course – Beginner to Pro",
+            channel: "freeCodeCamp.org",
+            level: "Beginner",
+            language: "English",
+            tags: ["HTML", "CSS", "Beginner"],
+            url: "https://www.youtube.com/watch?v=mU6anWqZJcc",
+            description:
+              "Massive HTML & CSS course that walks you through layouts, flexbox, responsive design, and real-world page structures."
+          },
+          {
+            title: "JavaScript Full Course (Beginner)",
+            channel: "Bro Code",
+            level: "Beginner",
+            language: "English",
+            tags: ["JavaScript", "Beginner"],
+            url: "https://www.youtube.com/watch?v=8dWL3wF_OMw",
+            description:
+              "JavaScript fundamentals explained with fun examples, covering variables, functions, DOM manipulation, and events."
+          },
+          {
+            title: "Web Development Crash Course",
+            channel: "Traversy Media",
+            level: "Beginner",
+            language: "English",
+            tags: ["HTML", "CSS", "JavaScript"],
+            url: "https://www.youtube.com/watch?v=UB1O30fR-EE",
+            description:
+              "Crash-course overview of the core web dev technologies and how they fit together to build modern websites."
+          },
+          {
+            title: "Responsive Web Design Certification (Projects)",
+            channel: "freeCodeCamp.org",
+            level: "Beginner",
+            language: "English",
+            tags: ["HTML", "CSS", "Responsive", "Projects"],
+            url: "https://www.youtube.com/playlist?list=PLWKjhJtqVAblv09G7wqEB6L_LU1QzZ5cY",
+            description:
+              "Project-based responsive web design content suitable for beginners wanting to build portfolio-ready web pages."
+          },
+          {
+            title: "Full Stack Web Development (Hindi)",
+            channel: "CodeWithHarry",
+            level: "Beginner",
+            language: "Hindi",
+            tags: ["HTML", "CSS", "JavaScript", "Hindi", "Full stack"],
+            url: "https://www.youtube.com/playlist?list=PLu0W_9lII9agq6kUQWQfT8W7iQ0u6YxVq",
+            description:
+              "Playlist covering front-end and some back-end concepts in Hindi using popular web technologies."
+          },
+          {
+            title: "React JS Full Course for Beginners",
+            channel: "freeCodeCamp.org",
+            level: "Intermediate",
+            language: "English",
+            tags: ["React", "Frontend", "Intermediate"],
+            url: "https://www.youtube.com/watch?v=bMknfKXIFA8",
+            description:
+              "Complete React JS course that teaches components, state management, hooks, and building modern single-page apps."
+          }
+        ]
+      },
+      {
+        id: "c",
+        label: "C Language",
+        icon: "📘",
+        subtitle: "C programming fundamentals, pointers, and problem solving.",
+        chips: ["beginner", "pointers", "hindi"],
+        resources: [
+          {
+            title: "C Programming Full Course for Beginners",
+            channel: "freeCodeCamp.org",
+            level: "Beginner",
+            language: "English",
+            tags: ["C", "Beginner", "Full course"],
+            url: "https://www.youtube.com/watch?v=KJgsSFOSQv0",
+            description:
+              "Thorough C programming course starting from basics and moving to pointers, structs, dynamic memory, and more."
+          },
+          {
+            title: "C Language Tutorial in Hindi",
+            channel: "CodeWithHarry",
+            level: "Beginner",
+            language: "Hindi",
+            tags: ["C", "Beginner", "Hindi"],
+            url: "https://www.youtube.com/playlist?list=PLu0W_9lII9agICnT8t4iYVSZ3eykIAOME",
+            description:
+              "C programming from scratch in Hindi: syntax, loops, arrays, functions, and pointer basics."
+          },
+          {
+            title: "C Programming Tutorials",
+            channel: "Neso Academy",
+            level: "Beginner",
+            language: "English",
+            tags: ["C", "Theory", "Practice"],
+            url: "https://www.youtube.com/playlist?list=PLBlnK6fEyqRhX6r2uhhlubuF5QextdCSM",
+            description:
+              "Detailed C programming lectures covering theory and practice, suitable for college exams and interviews."
+          }
+        ]
+      },
+      {
+        id: "cpp",
+        label: "C++",
+        icon: "📗",
+        subtitle: "C++ basics, OOP, and DSA for placements.",
+        chips: ["beginner", "oop", "dsa", "hindi"],
+        resources: [
+          {
+            title: "C++ Full Course for Beginners",
+            channel: "freeCodeCamp.org",
+            level: "Beginner",
+            language: "English",
+            tags: ["C++", "Beginner", "Full course"],
+            url: "https://www.youtube.com/watch?v=vLnPwxZdW4Y",
+            description:
+              "Beginner-friendly C++ course that covers syntax, OOP, STL containers and includes hands-on examples."
+          },
+          {
+            title: "C++ Placement Course (DSA + OOP)",
+            channel: "Apna College",
+            level: "Intermediate",
+            language: "Hindi",
+            tags: ["C++", "DSA", "Placement", "Hindi"],
+            url: "https://www.youtube.com/playlist?list=PLfqMhTWNBTe3LtFWcvwpqTkUSlB32kJop",
+            description:
+              "C++ focused DSA + OOP playlist in Hindi targeting competitive programming and placement preparation."
+          },
+          {
+            title: "C++ Programming Tutorials",
+            channel: "CodeBeauty",
+            level: "Beginner",
+            language: "English",
+            tags: ["C++", "Beginner"],
+            url: "https://www.youtube.com/playlist?list=PL43pGnjiVwgQHLPnuH9ch-LhZdwckM8T4",
+            description:
+              "Friendly explanations of C++ basics, functions, classes, and more, suitable for beginners."
+          }
+        ]
+      },
+      {
+        id: "dsa",
+        label: "DSA & Competitive",
+        icon: "📊",
+        subtitle: "Data Structures & Algorithms for interviews and contests.",
+        chips: ["arrays", "dp", "graph", "competitive", "hindi"],
+        resources: [
+          {
+            title: "DSA Course in C++ (Love Babbar)",
+            channel: "CodeHelp - by Babbar",
+            level: "Intermediate",
+            language: "Hindi",
+            tags: ["DSA", "C++", "Placement", "Hindi"],
+            url: "https://www.youtube.com/playlist?list=PLDzeHZWIZsTryvtXdMr6rPh4IDexB5NIA",
+            description:
+              "Structured DSA course in C++ with problems for interviews and placements: arrays, linked lists, trees, DP and more."
+          },
+          {
+            title: "DSA in Java (with Practice)",
+            channel: "Kunal Kushwaha",
+            level: "Intermediate",
+            language: "English",
+            tags: ["DSA", "Java", "Placement"],
+            url: "https://www.youtube.com/playlist?list=PL9gnSGHSqcno1G3XjUbwzXHL8_EttOuKk",
+            description:
+              "Data structures and algorithms series in Java including recursion, backtracking, graphs, DP and practice questions."
+          },
+          {
+            title: "Algorithms and Data Structures Tutorial",
+            channel: "freeCodeCamp.org",
+            level: "Intermediate",
+            language: "English",
+            tags: ["DSA", "Algorithms", "Theory"],
+            url: "https://www.youtube.com/watch?v=8hly31xKli0",
+            description:
+              "Single long course on big-O notation, arrays, linked lists, stacks, queues, trees, graphs, and more."
+          }
+        ]
+      },
+      {
+        id: "sql",
+        label: "SQL & Databases",
+        icon: "🗄️",
+        subtitle: "SQL basics, queries, joins and database design.",
+        chips: ["beginner", "mysql", "postgres", "hindi"],
+        resources: [
+          {
+            title: "SQL Full Course for Beginners",
+            channel: "freeCodeCamp.org",
+            level: "Beginner",
+            language: "English",
+            tags: ["SQL", "Beginner", "Full course"],
+            url: "https://www.youtube.com/watch?v=HXV3zeQKqGY",
+            description:
+              "Complete introduction to SQL using PostgreSQL: SELECT, joins, grouping, subqueries and more."
+          },
+          {
+            title: "SQL Tutorial for Beginners",
+            channel: "Programming with Mosh",
+            level: "Beginner",
+            language: "English",
+            tags: ["SQL", "Beginner"],
+            url: "https://www.youtube.com/watch?v=7S_tz1z_5bA",
+            description:
+              "Practical SQL crash course that teaches how to query and manage relational databases quickly."
+          },
+          {
+            title: "MySQL Tutorial in Hindi",
+            channel: "CodeWithHarry",
+            level: "Beginner",
+            language: "Hindi",
+            tags: ["SQL", "MySQL", "Hindi"],
+            url: "https://www.youtube.com/playlist?list=PLu0W_9lII9agqK9D2j9q7M-gBuRudAF3a",
+            description:
+              "MySQL and SQL basics in Hindi: creating tables, inserting data, joins, constraints, and basic administration."
+          }
+        ]
+      },
+      {
+        id: "android",
+        label: "Android Development",
+        icon: "📱",
+        subtitle: "Build Android apps with Java/Kotlin and Android Studio.",
+        chips: ["java", "kotlin", "ui", "hindi"],
+        resources: [
+          {
+            title: "Android Development for Beginners",
+            channel: "freeCodeCamp.org",
+            level: "Beginner",
+            language: "English",
+            tags: ["Android", "Kotlin", "Beginner"],
+            url: "https://www.youtube.com/watch?v=fis26HvvDII",
+            description:
+              "Learn Android app development with Kotlin: activities, layouts, navigation, and simple apps."
+          },
+          {
+            title: "Android Development Course (Java, Hindi)",
+            channel: "CodeWithHarry",
+            level: "Beginner",
+            language: "Hindi",
+            tags: ["Android", "Java", "Hindi"],
+            url: "https://www.youtube.com/playlist?list=PLu0W_9lII9agq8vLvGv0D4KAzpI0v4d8F",
+            description:
+              "Android basics in Hindi using Java: Android Studio setup, activities, intents, layouts and basic apps."
+          },
+          {
+            title: "Android Kotlin Tutorials",
+            channel: "Philipp Lackner",
+            level: "Intermediate",
+            language: "English",
+            tags: ["Android", "Kotlin", "Intermediate"],
+            url: "https://www.youtube.com/playlist?list=PLQkwcJG4YTCSpJ2NLhDTHhi6XBNfk9WiC",
+            description:
+              "Kotlin-based Android tutorials covering modern patterns, Jetpack libraries and clean architecture concepts."
+          }
+        ]
+      },
+      {
+        id: "ml",
+        label: "Machine Learning",
+        icon: "🤖",
+        subtitle: "ML with Python, scikit-learn, and real datasets.",
+        chips: ["beginner", "python", "hindi", "projects"],
+        resources: [
+          {
+            title: "Machine Learning with Python – Full Course",
+            channel: "freeCodeCamp.org",
+            level: "Intermediate",
+            language: "English",
+            tags: ["Machine Learning", "Python", "Full course"],
+            url: "https://www.youtube.com/watch?v=GwIo3gDZCVQ",
+            description:
+              "End-to-end ML course: preprocessing, regression, classification, clustering and model evaluation using scikit-learn."
+          },
+          {
+            title: "Machine Learning Crash Course",
+            channel: "Tech With Tim",
+            level: "Intermediate",
+            language: "English",
+            tags: ["Machine Learning", "Python"],
+            url: "https://www.youtube.com/watch?v=KNAWp2S3w94",
+            description:
+              "ML basics with hands-on examples in Python, including linear regression, classification and neural network concepts."
+          },
+          {
+            title: "Machine Learning Tutorial in Hindi",
+            channel: "Krish Naik",
+            level: "Intermediate",
+            language: "Hindi",
+            tags: ["Machine Learning", "Python", "Hindi"],
+            url: "https://www.youtube.com/playlist?list=PLZoTAELRMXVN4es3lHfdeqfB8-9C5l3W2",
+            description:
+              "Hindi playlist covering ML concepts, feature engineering, models and real-world projects using Python."
+          }
+        ]
+      }
+    ];
+
+    // ------------- Helper: escape HTML to avoid XSS -------------
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // ------------- Rendering functions -------------
+    const topicTabsEl = document.getElementById("topicTabs");
+    const topicsContainerEl = document.getElementById("topicsContainer");
+
+    function createTopicTab(topic, isActive) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "topic-tab" + (isActive ? " active" : "");
+      btn.dataset.topicId = topic.id;
+      btn.innerHTML = `
+        <span class="icon">${escapeHtml(topic.icon || "📚")}</span>
+        <span>${escapeHtml(topic.label)}</span>
+      `;
+      return btn;
+    }
+
+    function createTopicSection(topic, isActive) {
+      const section = document.createElement("section");
+      section.className = "topic-section" + (isActive ? " active" : "");
+      section.dataset.topicId = topic.id;
+
+      const searchInputId = `searchInput-${topic.id}`;
+      const searchButtonId = `searchButton-${topic.id}`;
+      const clearButtonId = `clearButton-${topic.id}`;
+      const chipsRowId = `chips-${topic.id}`;
+      const gridId = `grid-${topic.id}`;
+      const emptyId = `empty-${topic.id}`;
+      const visibleCountId = `visibleCount-${topic.id}`;
+      const totalCountId = `totalCount-${topic.id}`;
+
+      section.innerHTML = `
+        <div class="topic-header">
+          <div class="topic-header-main">
+            <h2 class="topic-title">${escapeHtml(topic.label)}</h2>
+            <p class="topic-subtitle">${escapeHtml(topic.subtitle || "")}</p>
+          </div>
+          <div class="topic-counter-pill">
+            <span id="${visibleCountId}">0</span>/<span id="${totalCountId}">0</span> shown
+          </div>
+        </div>
+
+        <div class="search-row">
+          <div class="search-input-wrapper">
+            <span class="search-icon-left">🔍</span>
+            <input
+              id="${searchInputId}"
+              class="search-input"
+              type="text"
+              placeholder="Search ${escapeHtml(topic.label)} by title, channel, level, topic…"
+              autocomplete="off"
+            />
+            <span class="search-kbd">Enter</span>
+          </div>
+          <div class="search-buttons">
+            <button class="btn-primary" id="${searchButtonId}">
+              <span class="icon">✨</span>
+              <span>Search</span>
+            </button>
+            <button class="btn-secondary" id="${clearButtonId}">
+              <span class="icon">⟲</span>
+              <span>Clear</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="chips-row" id="${chipsRowId}">
+          <button type="button" class="chip" data-query="">All</button>
+          ${
+            (topic.chips || [])
+              .map(
+                (chip) =>
+                  `<button type="button" class="chip" data-query="${escapeHtml(
+                    chip.toLowerCase()
+                  )}">${escapeHtml(chip)}</button>`
+              )
+              .join("")
+          }
+        </div>
+
+        <div class="resources-grid" id="${gridId}"></div>
+        <div class="empty-state" id="${emptyId}" style="display:none;">
+          <strong>No matches found</strong> in ${escapeHtml(
+            topic.label
+          )}. Try a broader keyword like “beginner”, “oop”, or the topic name.
+        </div>
+      `;
+      return section;
+    }
+
+    function createResourceCard(resource) {
+      const card = document.createElement("article");
+      card.className = "card";
+
+      card.innerHTML = `
+        <div class="card-header">
+          <h3 class="card-title">${escapeHtml(resource.title)}</h3>
+          <span class="badge">${escapeHtml(resource.level)}</span>
+        </div>
+        <div class="card-meta">
+          <span><span class="dot"></span>${escapeHtml(resource.channel)}</span>
+          <span>${escapeHtml(resource.language)}</span>
+        </div>
+        <p class="card-desc">${escapeHtml(resource.description)}</p>
+        <div class="tag-row">
+          ${resource.tags
+            .map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
+            .join("")}
+        </div>
+        <div class="card-footer">
+          <a href="${resource.url}" class="link-button" target="_blank" rel="noopener noreferrer">
+            <span>Watch on YouTube</span>
+            <span>↗</span>
+          </a>
+          <span class="tiny-text">Free resource</span>
+        </div>
+      `;
+      return card;
+    }
+
+    function renderResourcesForTopic(topicId, list) {
+      const topic = topics.find((t) => t.id === topicId);
+      if (!topic) return;
+
+      const gridEl = document.getElementById(`grid-${topicId}`);
+      const emptyEl = document.getElementById(`empty-${topicId}`);
+      const visibleCountEl = document.getElementById(`visibleCount-${topicId}`);
+      const totalCountEl = document.getElementById(`totalCount-${topicId}`);
+
+      if (!gridEl || !emptyEl || !visibleCountEl || !totalCountEl) return;
+
+      totalCountEl.textContent = String(topic.resources.length);
+
+      gridEl.innerHTML = "";
+      if (!list.length) {
+        emptyEl.style.display = "block";
+      } else {
+        emptyEl.style.display = "none";
+        list.forEach((res) => {
+          gridEl.appendChild(createResourceCard(res));
+        });
+      }
+      visibleCountEl.textContent = String(list.length);
+    }
+
+    function performSearchForTopic(topicId) {
+      const topic = topics.find((t) => t.id === topicId);
+      if (!topic) return;
+
+      const inputEl = document.getElementById(`searchInput-${topicId}`);
+      if (!inputEl) return;
+
+      const query = inputEl.value.trim().toLowerCase();
+      if (!query) {
+        renderResourcesForTopic(topicId, topic.resources);
+        return;
+      }
+
+      const filtered = topic.resources.filter((res) => {
+        const haystack = (
+          res.title +
+          " " +
+          res.channel +
+          " " +
+          res.level +
+          " " +
+          res.language +
+          " " +
+          res.tags.join(" ") +
+          " " +
+          res.description
+        ).toLowerCase();
+        return haystack.includes(query);
+      });
+
+      renderResourcesForTopic(topicId, filtered);
+    }
+
+    function clearSearchForTopic(topicId) {
+      const inputEl = document.getElementById(`searchInput-${topicId}`);
+      if (!inputEl) return;
+      inputEl.value = "";
+      const topic = topics.find((t) => t.id === topicId);
+      if (!topic) return;
+      renderResourcesForTopic(topicId, topic.resources);
+      inputEl.focus();
+    }
+
+    // ------------- Initialize UI -------------
+    function init() {
+      const defaultTopicId = topics[0]?.id || null;
+
+      // render tabs
+      topics.forEach((topic) => {
+        const tab = createTopicTab(topic, topic.id === defaultTopicId);
+        topicTabsEl.appendChild(tab);
+      });
+
+      // render sections
+      topics.forEach((topic) => {
+        const section = createTopicSection(topic, topic.id === defaultTopicId);
+        topicsContainerEl.appendChild(section);
+      });
+
+      // attach listeners for each topic
+      topics.forEach((topic) => {
+        const topicId = topic.id;
+        const searchButtonEl = document.getElementById(`searchButton-${topicId}`);
+        const clearButtonEl = document.getElementById(`clearButton-${topicId}`);
+        const searchInputEl = document.getElementById(`searchInput-${topicId}`);
+        const chipsRowEl = document.getElementById(`chips-${topicId}`);
+
+        if (searchButtonEl) {
+          searchButtonEl.addEventListener("click", () => performSearchForTopic(topicId));
+        }
+        if (clearButtonEl) {
+          clearButtonEl.addEventListener("click", () => clearSearchForTopic(topicId));
+        }
+        if (searchInputEl) {
+          searchInputEl.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              performSearchForTopic(topicId);
+            }
+          });
+        }
+        if (chipsRowEl) {
+          chipsRowEl.addEventListener("click", (event) => {
+            const chip = event.target.closest(".chip");
+            if (!chip) return;
+            const q = chip.getAttribute("data-query") || "";
+            const input = document.getElementById(`searchInput-${topicId}`);
+            if (!input) return;
+            input.value = q;
+            performSearchForTopic(topicId);
+            input.focus();
+            if (q) {
+              input.setSelectionRange(q.length, q.length);
+            }
+          });
+        }
+
+        // initial render for each topic
+        renderResourcesForTopic(topicId, topic.resources);
+      });
+
+      // tab switching
+      topicTabsEl.addEventListener("click", (event) => {
+        const tab = event.target.closest(".topic-tab");
+        if (!tab) return;
+        const topicId = tab.dataset.topicId;
+        if (!topicId) return;
+
+        // update tab active class
+        Array.from(topicTabsEl.querySelectorAll(".topic-tab")).forEach((btn) => {
+          btn.classList.toggle("active", btn === tab);
+        });
+
+        // show the corresponding section
+        Array.from(topicsContainerEl.querySelectorAll(".topic-section")).forEach((section) => {
+          section.classList.toggle("active", section.dataset.topicId === topicId);
+        });
+
+        // focus that section's search
+        const inputEl = document.getElementById(`searchInput-${topicId}`);
+        if (inputEl) inputEl.focus();
+      });
+
+      // auto-focus default section input
+      if (defaultTopicId) {
+        const defaultInput = document.getElementById(`searchInput-${defaultTopicId}`);
+        if (defaultInput) defaultInput.focus();
+      }
+    }
+
+    // run init
+    init();
+  </script>
+</body>
+</html>
